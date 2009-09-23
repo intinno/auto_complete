@@ -106,12 +106,29 @@ module AutoCompleteMacrosHelper
   # 
   def text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})
     (completion_options[:skip_style] ? "" : auto_complete_stylesheet) +
-    text_field(object, method, tag_options) +
+    text_field(object, method, add_default_text(tag_options)) +
     content_tag("div", "", :id => "#{object}_#{method}_auto_complete", :class => "auto_complete") +
     auto_complete_field("#{object}_#{method}", { :url => { :action => "auto_complete_for_#{object}_#{method}" } }.update(completion_options))
   end
 
   private
+
+    def add_default_text(options, default_text = "Type to search")
+      #add the default text
+      options[:value] = default_text if options[:value].blank?
+      
+      #append the class name
+      class_name = "auto-complete-default"
+      options[:class] ||= ""
+      options[:class] += class_name 
+
+      #append the onclick event
+      options[:onfocus] ||= ""
+      options[:onfocus] += "if ($(this).hasClassName('#{class_name}')) {$(this).value = ''; $(this).removeClassName('#{class_name}')};"
+
+      options
+    end
+
     def auto_complete_stylesheet
       content_tag('style', <<-EOT, :type => Mime::CSS)
         div.auto_complete {
@@ -136,6 +153,10 @@ module AutoCompleteMacrosHelper
           color: #800; 
           margin:0;
           padding:0;
+        }
+        input.auto-complete-default {
+          color: gray;
+          font-style:italic;
         }
       EOT
     end
