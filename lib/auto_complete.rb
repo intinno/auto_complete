@@ -41,6 +41,18 @@ module AutoComplete
 
         render :inline => "<%= auto_complete_result @items, '#{method}' %>"
       end
+
+      self.before_filter "remove_default_auto_complete_#{object}_#{method}"
+      define_method "remove_default_auto_complete_#{object}_#{method}" do 
+        if params[object]
+          if params[object][method]
+            if params[object][method].eql?("Type to search")
+              params[object][method] = nil
+            end
+          end
+        end 
+      end
+
     end
   end
   
