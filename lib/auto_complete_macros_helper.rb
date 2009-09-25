@@ -114,17 +114,19 @@ module AutoCompleteMacrosHelper
   private
 
     def add_default_text(options, default_text = "Type to search")
-      #add the default text
-      options[:value] = default_text if options[:value].blank?
+      if options[:value].blank?
+        #add the default text
+        options[:value] = default_text 
       
-      #append the class name
-      class_name = "auto-complete-default"
-      options[:class] ||= ""
-      options[:class] += class_name 
+        #append the class name
+        class_name = "auto-complete-default"
+        options[:class] ||= ""
+        options[:class] += class_name 
 
-      #append the onclick event
-      options[:onfocus] ||= ""
-      options[:onfocus] += "if ($(this).hasClassName('#{class_name}')) {$(this).value = ''; $(this).removeClassName('#{class_name}')};"
+        #append the onclick event
+        options[:onfocus] ||= ""
+        options[:onfocus] += "if ($(this).hasClassName('#{class_name}')) {$(this).value = ''; $(this).removeClassName('#{class_name}')};"
+      end
 
       options
     end
